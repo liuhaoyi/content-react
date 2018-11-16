@@ -1,6 +1,76 @@
 const getMenus = (req,res) =>
    res.json(
     [
+
+        // {
+        //     path: '/',
+        //     component: '../layouts/BasicLayout',
+        //     Routes: ['src/pages/Authorized'],
+        //     authority: ['admin', 'user'],
+        //     routes: [
+        //       // dashboard
+        //       { path: '/', redirect: '/dashboard/analysis' },
+        //       {
+        //         path: '/news',
+        //         name: 'news',
+        //         icon: 'news',
+        //         routes: [
+        //           {
+        //             path: '/news/smallcatalog',
+        //             name: 'smallcatalog',
+        //             component: './News/SmallCatalog',
+        //           },
+        //           {
+        //             path: '/news/article/:catalog',
+        //             hideInMenu:true,
+        //             name: 'news',
+        //             component: './News/News',
+        //           }
+        //           // {
+        //           //   path: '/dashboard/workplace',
+        //           //   name: 'workplace',
+        //           //   component: './Dashboard/Workplace',
+        //           // },
+        //         ],
+        //       },
+        {
+            "path": "/news", 
+            "name": "news", 
+            "locale": "menu.forums",
+            "icon": 'news',
+            "children":[
+                {
+                    path: '/news/smallcatalog',
+                    name: 'smallcatalog',
+                    component: './News/SmallCatalog',
+                    // "locale": "menu.forums.subject"
+                },
+                {
+                    path: '/news/article/1',
+                    name: 'news',
+                    component: './News/News',
+                    // "locale": "menu.forums.subject"
+                },
+                {
+                    path: '/news/article/2',
+                    name: 'news2',
+                    component: './News/News',
+                    // "locale": "menu.forums.subject"
+                }
+                // {
+                //     "path": "/forums/communication?type=1",
+                //     "name": "communication",
+                //    // "exact": true, 
+                //     "locale": "menu.forums.communication"
+                // }, 
+                // {
+                //     "path": "/forums/subject",
+                //     "name": "subject",
+                //   //  "exact": true, 
+                //     "locale": "menu.forums.subject"
+                // }, 
+            ]
+        }, 
         {
             "path": "/forums", 
             "name": "forum", 

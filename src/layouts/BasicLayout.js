@@ -88,14 +88,20 @@ class BasicLayout extends React.PureComponent {
     this.matchParamsPath = memoizeOne(this.matchParamsPath, isEqual);
   }
 
+  
   state = {
     rendering: true,
     isMobile: false,
-    menuData: this.getMenuData(),
+    // menuData: this.getMenuData(),
   };
 
   componentDidMount() {
     const { dispatch } = this.props;
+
+    dispatch({
+      type: 'global/fetchMenus',
+    });
+
     dispatch({
       type: 'user/fetchCurrent',
     });
@@ -141,12 +147,12 @@ class BasicLayout extends React.PureComponent {
     };
   }
 
-  getMenuData() {
-    const {
-      route: { routes },
-    } = this.props;
-    return memoizeOneFormatter(routes);
-  }
+  // getMenuData() {
+  //   const {
+  //     route: { routes },
+  //   } = this.props;
+  //   return memoizeOneFormatter(routes);
+  // }
 
   /**
    * 获取面包屑映射
@@ -163,7 +169,7 @@ class BasicLayout extends React.PureComponent {
         routerMap[menuItem.path] = menuItem;
       });
     };
-    mergeMenuAndRouter(this.getMenuData());
+    // mergeMenuAndRouter(this.getMenuData());
     return routerMap;
   }
 
@@ -230,8 +236,9 @@ class BasicLayout extends React.PureComponent {
       layout: PropsLayout,
       children,
       location: { pathname },
+      menuData
     } = this.props;
-    const { isMobile, menuData } = this.state;
+    const { isMobile } = this.state;
     const isTop = PropsLayout === 'topmenu';
     const routerConfig = this.matchParamsPath(pathname);
     const layout = (
@@ -293,4 +300,5 @@ export default connect(({ global, setting }) => ({
   collapsed: global.collapsed,
   layout: setting.layout,
   ...setting,
+  menuData: global.menuData
 }))(BasicLayout);

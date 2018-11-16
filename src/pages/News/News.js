@@ -183,6 +183,7 @@ class News extends PureComponent {
     selectedRows: [],
     formValues: {},
     stepFormValues: {},
+    catalog: null,
   };
 
   columns = [
@@ -229,6 +230,9 @@ class News extends PureComponent {
   componentDidMount() {
     
     let catalog = this.props.match.params.catalog;
+    this.setState({
+      catalog: catalog,
+    })
     const { dispatch } = this.props;
     dispatch({
       type: 'news/fetchArticleBySmallCatalog',
@@ -238,6 +242,26 @@ class News extends PureComponent {
           pageSize: "10"
       }
     });
+  }
+  componentDidUpdate(){
+    let catalog = this.props.match.params.catalog;
+
+    if(this.state.catalog !=catalog){
+      let catalog = this.props.match.params.catalog;
+      this.setState({
+        catalog: catalog,
+      })
+      const { dispatch } = this.props;
+      dispatch({
+        type: 'news/fetchArticleBySmallCatalog',
+        payload:{
+            smallCatalog: catalog,
+            currentPage: "1",
+            pageSize: "10"
+        }
+      });
+    }
+    // console.log("componentDidUpdate----" + catalog);
   }
 
   handleStandardTableChange = (pagination, filtersArg, sorter) => {

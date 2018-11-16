@@ -1,4 +1,4 @@
-import { queryNotices } from '@/services/api';
+import { queryNotices, queryMenus } from '@/services/api';
 
 export default {
   namespace: 'global',
@@ -6,6 +6,7 @@ export default {
   state: {
     collapsed: false,
     notices: [],
+    menuData:[],
   },
 
   effects: {
@@ -31,6 +32,13 @@ export default {
         payload: count,
       });
     },
+    *fetchMenus(_, { call, put }) {
+      const data = yield call(queryMenus);
+      yield put({
+        type: 'saveMenus',
+        payload: data,
+      });
+    },
   },
 
   reducers: {
@@ -50,6 +58,12 @@ export default {
       return {
         ...state,
         notices: state.notices.filter(item => item.type !== payload),
+      };
+    },
+    saveMenus(state, { payload }) {
+      return {
+        ...state,
+        menuData: payload,
       };
     },
   },
