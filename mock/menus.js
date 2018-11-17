@@ -146,6 +146,46 @@ const getMenus = (req,res) =>
         }, 
         {
             "path": "/news", 
+            "name": "公共服务", 
+            "locale": "menu.forums",
+            "icon": 'usergroup-add',
+            "children":[
+                // {
+                //     path: '/news/smallcatalog',
+                //     // name: 'smallcatalog',
+                //     name: '小类',
+                //     component: './News/SmallCatalog',
+                //     // "locale": "menu.forums.subject"
+                // },
+                {
+                    path: '/news/article/100',
+                    name: '员工通勤',
+                    // name: 'news',
+                    component: './News/News',
+                    // "locale": "menu.forums.subject"
+                },
+                {
+                    path: '/news/article/101',
+                    name: '员工餐厅',
+                    component: './News/News',
+                    // "locale": "menu.forums.subject"
+                },
+                {
+                    path: '/news/article/102',
+                    name: '员工浴池',
+                    component: './News/News',
+                    // "locale": "menu.forums.subject"
+                },
+                {
+                    path: '/news/article/103',
+                    name: '员工运动',
+                    component: './News/News',
+                    // "locale": "menu.forums.subject"
+                }
+            ]
+        }, 
+        {
+            "path": "/news", 
             "name": "其它", 
             "locale": "menu.forums",
             "icon": 'usergroup-add',
