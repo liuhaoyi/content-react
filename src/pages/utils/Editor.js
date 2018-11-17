@@ -51,7 +51,7 @@ class Editor extends PureComponent {
     ]
 
     editor.customConfig.uploadFileName = 'file'
-    editor.customConfig.uploadImgServer = '/community/v1/api/files/upload'  // 上传图片到服务器
+    editor.customConfig.uploadImgServer = '/api/file/uploadEditorFile'  // 上传图片到服务器
     // 限制一次最多上传 5 张图片
     editor.customConfig.uploadImgMaxLength = 5
     editor.customConfig.uploadImgHooks = {
@@ -71,7 +71,6 @@ class Editor extends PureComponent {
       }
      }
     editor.create()
-
     //editor.txt.html('')
   }
 

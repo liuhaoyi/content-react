@@ -35,128 +35,159 @@ const getMenus = (req,res) =>
         //       },
         {
             "path": "/news", 
-            "name": "news", 
+            "name": "炼化新闻", 
             "locale": "menu.forums",
-            "icon": 'news',
+            "icon": 'usergroup-add',
             "children":[
-                {
-                    path: '/news/smallcatalog',
-                    name: 'smallcatalog',
-                    component: './News/SmallCatalog',
-                    // "locale": "menu.forums.subject"
-                },
+                // {
+                //     path: '/news/smallcatalog',
+                //     // name: 'smallcatalog',
+                //     name: '小类',
+                //     component: './News/SmallCatalog',
+                //     // "locale": "menu.forums.subject"
+                // },
                 {
                     path: '/news/article/1',
-                    name: 'news',
+                    name: '公司要闻',
+                    // name: 'news',
                     component: './News/News',
                     // "locale": "menu.forums.subject"
                 },
                 {
                     path: '/news/article/2',
-                    name: 'news2',
+                    name: '外媒看炼化',
                     component: './News/News',
                     // "locale": "menu.forums.subject"
                 }
-                // {
-                //     "path": "/forums/communication?type=1",
-                //     "name": "communication",
-                //    // "exact": true, 
-                //     "locale": "menu.forums.communication"
-                // }, 
-                // {
-                //     "path": "/forums/subject",
-                //     "name": "subject",
-                //   //  "exact": true, 
-                //     "locale": "menu.forums.subject"
-                // }, 
             ]
         }, 
         {
-            "path": "/forums", 
-            "name": "forum", 
+            "path": "/news", 
+            "name": "企业文化", 
+            "locale": "menu.forums",
+            "icon": 'usergroup-add',
+            "children":[
+                // {
+                //     path: '/news/smallcatalog',
+                //     // name: 'smallcatalog',
+                //     name: '小类',
+                //     component: './News/SmallCatalog',
+                //     // "locale": "menu.forums.subject"
+                // },
+                {
+                    path: '/news/article/5',
+                    name: '文化理念',
+                    // name: 'news',
+                    component: './News/News',
+                    // "locale": "menu.forums.subject"
+                },
+                {
+                    path: '/news/article/6',
+                    name: '文化推进',
+                    component: './News/News',
+                    // "locale": "menu.forums.subject"
+                }
+            ]
+        }, 
+        {
+            "path": "/news", 
+            "name": "学习园地", 
             "locale": "menu.forums",
             "icon": 'usergroup-add',
             "children":[
                 {
-                    "path": "/forums/communication?type=1",
-                    "name": "communication",
-                   // "exact": true, 
-                    "locale": "menu.forums.communication"
-                }, 
+                    path: '/news/article/10',
+                    name: '应知应会',
+                    // name: 'news',
+                    component: './News/News',
+                    // "locale": "menu.forums.subject"
+                },
                 {
-                    "path": "/forums/subject",
-                    "name": "subject",
-                  //  "exact": true, 
-                    "locale": "menu.forums.subject"
-                }, 
+                    path: '/news/article/11',
+                    name: '微课',
+                    component: './News/News',
+                    // "locale": "menu.forums.subject"
+                },
+                {
+                    path: '/news/article/9',
+                    name: '学习资料',
+                    component: './News/News',
+                    // "locale": "menu.forums.subject"
+                }
             ]
         }, 
         {
-            "path": "/feedback", 
-            "name": "feedback", 
-           // "exact": true,
-            "locale": "menu.feedback",
-            "icon": 'issues-close',
+            "path": "/news", 
+            "name": "炼化榜样", 
+            "locale": "menu.forums",
+            "icon": 'usergroup-add',
             "children":[
+                // {
+                //     path: '/news/smallcatalog',
+                //     // name: 'smallcatalog',
+                //     name: '小类',
+                //     component: './News/SmallCatalog',
+                //     // "locale": "menu.forums.subject"
+                // },
                 {
-                    "path": "/feedback/issues",
-                    "name": "issues",
-               //     "exact": true, 
-                    "locale": "menu.feedback.issues"
-                }, 
+                    path: '/news/article/7',
+                    name: '劳动模范',
+                    // name: 'news',
+                    component: './News/News',
+                    // "locale": "menu.forums.subject"
+                },
                 {
-                    "path": "/feedback/requirementmanager",
-                    "name": "requirementmanager",
-                 //   "exact": true, 
-                    "locale": "menu.feedback.requirementmanager"
-                },                
+                    path: '/news/article/8',
+                    name: '好工匠',
+                    component: './News/News',
+                    // "locale": "menu.forums.subject"
+                }
             ]
         }, 
-
         {
-            "path": "/knowledgebase", 
-            "name": "knowledgebase", 
-         //   "exact": true,
-            "locale": "menu.knowledgebase",
-            "icon": 'file-search',
-            "children":[     
-                {
-                    "path": "/assistant", 
-                    "name": "assistant", 
-           //         "exact": true, 
-                    "locale": "menu.assistant"
-                }, 
-                {
-                    "path": "/knowledge", 
-                    "name": "knowledge", 
-           //         "exact": true, 
-                    "locale": "menu.knowledge"
-                },   
-             ]
-        }, 
-        {
-            "path": "/report", 
-            "name": "report", 
-            "locale": "menu.report",
-            "icon": 'pie-chart',
+            "path": "/news", 
+            "name": "其它", 
+            "locale": "menu.forums",
+            "icon": 'usergroup-add',
             "children":[
+                // {
+                //     path: '/news/smallcatalog',
+                //     // name: 'smallcatalog',
+                //     name: '小类',
+                //     component: './News/SmallCatalog',
+                //     // "locale": "menu.forums.subject"
+                // },
                 {
-                    "path": "/feedback/feedbackReport",
-                    "name": "feedbackReport",
-              //      "exact": true, 
-                    "locale": "menu.report.feedbackReport"
-                }, 
+                    path: '/news/article/shouyedongtu',
+                    name: '首页动图',
+                    // name: 'news',
+                    component: './News/News',
+                    // "locale": "menu.forums.subject"
+                },
                 {
-                    "path": "/report/deptranking",
-                    "name": "deptranking",
-               //     "exact": true, 
-                    "locale": "menu.report.deptranking"
-                }, 
+                    path: '/news/article/gongsidongtai',
+                    name: '公司动态',
+                    // name: 'news',
+                    component: './News/News',
+                    // "locale": "menu.forums.subject"
+                },
                 {
-                    "path": "/report/userranking",
-                    "name": "userranking",
-                 //   "exact": true, 
-                    "locale": "menu.report.userranking"
+                    path: '/news/article/tongzhigonggao',
+                    name: '通知公告',
+                    component: './News/News',
+                    // "locale": "menu.forums.subject"
+                },
+                {
+                    path: '/news/article/zhongdiangongzuo',
+                    name: '重点工作',
+                    component: './News/News',
+                    // "locale": "menu.forums.subject"
+                },
+                {
+                    path: '/news/article/yuangongshouce',
+                    name: '员工手册',
+                    component: './News/News',
+                    // "locale": "menu.forums.subject"
                 }
             ]
         }, 

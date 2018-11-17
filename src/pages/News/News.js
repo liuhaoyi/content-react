@@ -26,6 +26,7 @@ import StandardTable from '@/components/StandardTable';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import styles from './TableList.less';
 import Editor from "@/pages/utils/Editor"
+const RangePicker = DatePicker.RangePicker;
 
 function getBase64(img, callback) {
     const reader = new FileReader();
@@ -55,6 +56,7 @@ class Avatar extends React.Component {
         return;
       }
       if (info.file.status === 'done') {
+        console.log("info" +info);
         // Get this url from response in real world.
         getBase64(info.file.originFileObj, imageUrl => this.setState({
           imageUrl,
@@ -73,11 +75,11 @@ class Avatar extends React.Component {
       const imageUrl = this.state.imageUrl;
       return (
         <Upload
-          name="avatar"
+          name="file"
           listType="picture-card"
           className="avatar-uploader"
           showUploadList={false}
-          action="//jsonplaceholder.typicode.com/posts/"
+          action="/api/file/uploadFile"
           beforeUpload={beforeUpload}
           onChange={this.handleChange}
         >
@@ -101,7 +103,7 @@ const statusMap = ['default', 'processing', 'success', 'error'];
 const status = ['关闭', '运行中', '已上线', '异常'];
 
 const CreateForm = Form.create()(props => {
-  const { modalVisible, form, handleAdd, handleModalVisible } = props;
+  const { modalVisible, form, handleAdd, handleHtml, handleModalVisible } = props;
   
   const okHandle = () => {
     form.validateFields((err, fieldsValue) => {
@@ -113,7 +115,8 @@ const CreateForm = Form.create()(props => {
   };
 
   const setcontent = (html,txt) => {
-    this.setState({postText:html,postContent:txt });
+    //this.setState({postText:html,postContent:txt });
+    handleHtml(html);
   }
 
   return (
@@ -156,9 +159,9 @@ const CreateForm = Form.create()(props => {
           rules: [{ required: true, message: '请输入至少2个的编辑人员！', min: 1 }],
         })(<Input visible="false" placeholder="请输入编辑人员" />)}
       </FormItem> */}
-     {/* {<div>
-        <Editor onChange={this.setcontent} isCommited={this.props.isCommited} />
-     </div> */}
+     <div>
+        <Editor onChange={setcontent} isCommited={props.isCommited} />
+     </div>
 
      {/* <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="内容">
         {form.getFieldDecorator('content', {
@@ -184,6 +187,7 @@ class News extends PureComponent {
     formValues: {},
     stepFormValues: {},
     catalog: null,
+    html: null,
   };
 
   columns = [
@@ -381,28 +385,23 @@ class News extends PureComponent {
 
   handleAdd = fields => {
     const { dispatch } = this.props;
-    // dispatch({
-    //   type: 'rule/add',
-    //   payload: {
-    //     desc: fields.desc,
-    //   },
-    // });
-    // let formData = new FormData();
-    // formData.append("title",fields.title);
-    // formData.append("publishDate",fields.publishDate);
-
     dispatch({
         type: 'news/addArticle',
         payload: {
             title: fields.title,
             editor: fields.editor,
+            smallCatalog: this.state.catalog,
+            content: this.state.html,
         },
-      });
+    });
   
     message.success('添加成功');
     this.handleModalVisible();
   };
 
+  handleHtml = html =>{
+    this.setState({html:html});
+  }
   handleUpdate = fields => {
     const { dispatch } = this.props;
     dispatch({
@@ -431,15 +430,17 @@ class News extends PureComponent {
             </FormItem>
           </Col>
           <Col md={8} sm={24}>
-            <FormItem label="使用状态">
-              {getFieldDecorator('status')(
-                <Select placeholder="请选择" style={{ width: '100%' }}>
-                  <Option value="0">关闭</Option>
-                  <Option value="1">运行中</Option>
-                </Select>
-              )}
+            <FormItem label="">
+              {getFieldDecorator('date')(   
+              <RangePicker
+                ranges={{ Today: [moment(), moment()], 'This Month': [moment(), moment().endOf('month')] }}
+                showTime
+                format="YYYY/MM/DD"
+                // onChange={onChange}
+              />)}
             </FormItem>
           </Col>
+        
           <Col md={8} sm={24}>
             <span className={styles.submitButtons}>
               <Button type="primary" htmlType="submit">
@@ -478,6 +479,7 @@ class News extends PureComponent {
 
     const parentMethods = {
       handleAdd: this.handleAdd,
+      handleHtml : this.handleHtml,
       handleModalVisible: this.handleModalVisible,
     };
     const updateMethods = {
@@ -485,7 +487,7 @@ class News extends PureComponent {
       handleUpdate: this.handleUpdate,
     };
     return (
-      <PageHeaderWrapper title="查询表格">
+      <PageHeaderWrapper>
         <Card bordered={false}>
           <div className={styles.tableList}>
             <div className={styles.tableListForm}>{this.renderForm()}</div>
