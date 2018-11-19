@@ -1,4 +1,5 @@
 import * as svc from '../services/News';
+import moment from 'moment';
 
 export default {
     namespace: 'news',
@@ -25,6 +26,9 @@ export default {
         loadArticleBySmallCatalog(state,{payload}){
             return { ...state,...payload };
         },
+        loadArticleList(state,{payload}){
+            return { ...state,...payload };
+        },
     },
 
     effects:{
@@ -40,6 +44,27 @@ export default {
                     },
                 });
         },
+
+        *fetchArticleList({payload},{ call, put }){
+
+            let { smallCatalog, title,date,currentPage,pageSize} = payload;
+            if(!title) title=""; 
+            let fromDate = "";
+            let toDate = "";
+            if(date && date.length>0){
+                fromDate = moment(date[0]).format("YYYY-MM-DD");
+                toDate = moment(date[1]).format("YYYY-MM-DD");
+            }
+            currentPage = currentPage - 1;
+            const { data } = yield call(svc.fetchArticleList,smallCatalog,title,fromDate,toDate,currentPage,pageSize);
+            yield put({
+                    type: 'loadArticleList',
+                    payload: {
+                        data: data,
+                    },
+                });
+        },
+
         *addArticle({payload},{call,put}){
             // let {id,title,content,img,editor,publishDate,smallCatalog} = payload;
             console.log("payload---" + payload);

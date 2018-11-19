@@ -171,7 +171,96 @@ const CreateForm = Form.create()(props => {
     </Modal>
   );
 });
+@Form.create()
+class UpdateForm extends PureComponent {
 
+  constructor(props) {
+    super(props);
+
+
+    this.state = {
+      formVals: {
+        title: props.values.title,
+        editor: props.values.editor,
+        publishDate: props.values.publishDate,
+        // publishDate: props.values.publishDate,
+        key: props.values.key,
+        target: '0',
+        template: '0',
+        type: '1',
+        time: '',
+        frequency: 'month',
+      },
+      currentStep: 0,
+
+    };
+
+    this.formLayout = {
+      labelCol: { span: 7 },
+      wrapperCol: { span: 13 },
+    };
+  }
+  
+  render() {
+    const { form } = this.props;
+    const { updateModalVisible, handleUpdateModalVisible, handleHtml, handleUpdate } = this.props;
+    // const { formVals } = this.state;
+    const setcontent = (html,txt) => {
+      this.setState({postText:html,postContent:txt });
+      handleHtml(html);
+    }
+
+    const okHandle = () => {
+      console.log("updateform okHandle----");
+      form.validateFields((err, fieldsValue) => {
+        if (err) return;
+        form.resetFields();
+        console.log(fieldsValue);
+        handleUpdate(fieldsValue);
+      });
+    };
+  
+    return (
+      <Modal
+        width={640}
+        bodyStyle={{ padding: '32px 40px 48px' }}
+        destroyOnClose
+        title="编辑文章"
+        visible={updateModalVisible}
+        // footer={this.renderFooter(currentStep)}
+        onOk={okHandle}
+        onCancel={() => handleUpdateModalVisible()}
+      >
+      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="id">
+        {form.getFieldDecorator('id', {
+          initialValue: this.props.values.id,
+        })(<Input placeholder="请输入标题"/>)}
+      </FormItem>
+      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="标题">
+        {form.getFieldDecorator('title', {
+          rules: [{ required: true, message: '请输入至少2个字符的标题！', min: 2 }],
+          initialValue: this.props.values.title,
+        })(<Input placeholder="请输入标题" />)}
+      </FormItem>
+      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="编辑人员">
+        {form.getFieldDecorator('editor', {
+          rules: [{ required: true, message: '请输入至少2个的编辑人员！', min: 2 }],
+          initialValue: this.props.values.editor,
+        })(<Input placeholder="请输入编辑人员" />)}
+      </FormItem>
+      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="发布日期">
+        {form.getFieldDecorator('publishDate', {
+          rules: [{ required: true, message: '请选择发布日期！'}],
+          initialValue: moment(this.props.values.publishDate),
+        })(<DatePicker/>)}
+      </FormItem>
+     <div>
+        <Editor onChange={setcontent} isCommited={this.props.isCommited} htmlValue={this.props.values.content} ></Editor>
+     </div>
+      </Modal>
+    );
+  }
+}
 /* eslint react/no-multi-comp:0 */
 @connect(({ loading,news }) => ({
   news,
@@ -182,7 +271,7 @@ class News extends PureComponent {
   state = {
     modalVisible: false,
     updateModalVisible: false,
-    expandForm: false,
+    // expandForm: false,
     selectedRows: [],
     formValues: {},
     stepFormValues: {},
@@ -206,18 +295,14 @@ class News extends PureComponent {
     {
       title: '发布时间',
       dataIndex: 'publishDate',
-      sorter: true,
-      render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
+      // sorter: true,
+      render: val => <span>{moment(val).format('YYYY-MM-DD')}</span>,
     },
 
     {
-      title: '服务调用次数',
-      dataIndex: 'callNo',
-      sorter: true,
+      title: '阅读次数',
+      dataIndex: 'readCount',
       align: 'right',
-      render: val => `${val} 万`,
-      // mark to display a total number
-      needTotal: true,
     },
     {
       title: '操作',
@@ -239,49 +324,51 @@ class News extends PureComponent {
     })
     const { dispatch } = this.props;
     dispatch({
-      type: 'news/fetchArticleBySmallCatalog',
-      payload:{
-          smallCatalog: catalog,
-          currentPage: "1",
-          pageSize: "10"
-      }
+      type: 'news/fetchArticleList',
+      payload: {
+        smallCatalog: this.props.match.params.catalog,
+        title: "",
+        date:[],
+        currentPage: 1,
+        pageSize: 10,
+      },
     });
   }
+
   componentDidUpdate(){
     let catalog = this.props.match.params.catalog;
-
     if(this.state.catalog !=catalog){
+      //新菜单；
       let catalog = this.props.match.params.catalog;
       this.setState({
         catalog: catalog,
       })
       const { dispatch } = this.props;
       dispatch({
-        type: 'news/fetchArticleBySmallCatalog',
-        payload:{
-            smallCatalog: catalog,
-            currentPage: "1",
-            pageSize: "10"
-        }
+        type: 'news/fetchArticleList',
+        payload: {
+          smallCatalog: this.props.match.params.catalog,
+          title: "",
+          date: [],
+          currentPage: 1,
+          pageSize: 10,
+        },
       });
+      //切换菜单，清空查询条件。
+      this.handleFormReset();
     }
-    // console.log("componentDidUpdate----" + catalog);
   }
 
   handleStandardTableChange = (pagination, filtersArg, sorter) => {
-
-    console.log("handleStandardTableChange---");
     const { dispatch } = this.props;
     const { formValues } = this.state;
-
     const filters = Object.keys(filtersArg).reduce((obj, key) => {
       const newObj = { ...obj };
       newObj[key] = getValue(filtersArg[key]);
       return newObj;
     }, {});
-
     const params = {
-      smallCatalog:'1',
+      smallCatalog: this.props.match.params.catalog,
       currentPage: pagination.current,
       pageSize: pagination.pageSize,
       ...formValues,
@@ -290,9 +377,8 @@ class News extends PureComponent {
     if (sorter.field) {
       params.sorter = `${sorter.field}_${sorter.order}`;
     }
-
     dispatch({
-      type: 'news/fetchArticleBySmallCatalog',
+      type: 'news/fetchArticleList',
       payload: params,
     });
   };
@@ -309,12 +395,12 @@ class News extends PureComponent {
     });
   };
 
-  toggleForm = () => {
-    const { expandForm } = this.state;
-    this.setState({
-      expandForm: !expandForm,
-    });
-  };
+  // toggleForm = () => {
+  //   const { expandForm } = this.state;
+  //   this.setState({
+  //     expandForm: !expandForm,
+  //   });
+  // };
 
   handleMenuClick = e => {
     const { dispatch } = this.props;
@@ -348,12 +434,9 @@ class News extends PureComponent {
 
   handleSearch = e => {
     e.preventDefault();
-
     const { dispatch, form } = this.props;
-
     form.validateFields((err, fieldsValue) => {
       if (err) return;
-
       const values = {
         ...fieldsValue,
         updatedAt: fieldsValue.updatedAt && fieldsValue.updatedAt.valueOf(),
@@ -362,10 +445,14 @@ class News extends PureComponent {
       this.setState({
         formValues: values,
       });
-
       dispatch({
-        type: 'rule/fetch',
-        payload: values,
+        type: 'news/fetchArticleList',
+        payload: {
+          smallCatalog: this.props.match.params.catalog,
+          ...fieldsValue,
+          currentPage: 1,
+          pageSize: 10,
+        },
       });
     });
   };
@@ -399,22 +486,39 @@ class News extends PureComponent {
     this.handleModalVisible();
   };
 
+  //修改文章；
   handleHtml = html =>{
     this.setState({html:html});
   }
+
   handleUpdate = fields => {
+    // const { dispatch } = this.props;
+    // dispatch({
+    //   type: 'rule/update',
+    //   payload: {
+    //     name: fields.name,
+    //     desc: fields.desc,
+    //     key: fields.key,
+    //   },
+    // });
+
+    // message.success('配置成功');
+    // this.handleUpdateModalVisible();
     const { dispatch } = this.props;
     dispatch({
-      type: 'rule/update',
-      payload: {
-        name: fields.name,
-        desc: fields.desc,
-        key: fields.key,
-      },
+        type: 'news/addArticle',
+        payload: {
+            id: fields.id,
+            title: fields.title,
+            editor: fields.editor,
+            smallCatalog: this.state.catalog,
+            content: this.state.html,
+        },
     });
-
-    message.success('配置成功');
+  
+    message.success('添加成功');
     this.handleUpdateModalVisible();
+
   };
 
   renderSimpleForm() {
@@ -425,8 +529,8 @@ class News extends PureComponent {
       <Form onSubmit={this.handleSearch} layout="inline">
         <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
           <Col md={8} sm={24}>
-            <FormItem label="标题名称">
-              {getFieldDecorator('name')(<Input placeholder="请输入" />)}
+            <FormItem label="标题">
+              {getFieldDecorator('title')(<Input placeholder="请输入" />)}
             </FormItem>
           </Col>
           <Col md={8} sm={24}>
@@ -449,9 +553,6 @@ class News extends PureComponent {
               <Button style={{ marginLeft: 8 }} onClick={this.handleFormReset}>
                 重置
               </Button>
-              <a style={{ marginLeft: 8 }} onClick={this.toggleForm}>
-                展开 <Icon type="down" />
-              </a>
             </span>
           </Col>
         </Row>
@@ -517,13 +618,14 @@ class News extends PureComponent {
           </div>
         </Card>
         <CreateForm {...parentMethods} modalVisible={modalVisible} />
-        {stepFormValues && Object.keys(stepFormValues).length ? (
+        {/* {stepFormValues && Object.keys(stepFormValues).length ? ( */}
           <UpdateForm
+            {...parentMethods}
             {...updateMethods}
             updateModalVisible={updateModalVisible}
             values={stepFormValues}
           />
-        ) : null}
+        {/* ) : null} */}
       </PageHeaderWrapper>
     );
   }

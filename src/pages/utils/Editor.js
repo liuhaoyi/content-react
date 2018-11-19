@@ -72,6 +72,8 @@ class Editor extends PureComponent {
      }
     editor.create()
     //editor.txt.html('')
+    this.editor.txt.html(this.props.htmlValue);
+
   }
 
   componentDidUpdate(){
