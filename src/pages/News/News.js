@@ -26,69 +26,9 @@ import StandardTable from '@/components/StandardTable';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import styles from './TableList.less';
 import Editor from "@/pages/utils/Editor"
+import UploadForm from './UploadForm'
+
 const RangePicker = DatePicker.RangePicker;
-
-function getBase64(img, callback) {
-    const reader = new FileReader();
-    reader.addEventListener('load', () => callback(reader.result));
-    reader.readAsDataURL(img);
-  }
-  
-  function beforeUpload(file) {
-    const isJPG = file.type === 'image/jpeg';
-    if (!isJPG) {
-      message.error('You can only upload JPG file!');
-    }
-    const isLt2M = file.size / 1024 / 1024 < 2;
-    if (!isLt2M) {
-      message.error('Image must smaller than 2MB!');
-    }
-    return isJPG && isLt2M;
-  }
-class Avatar extends React.Component {
-    state = {
-      loading: false,
-    };
-  
-    handleChange = (info) => {
-      if (info.file.status === 'uploading') {
-        this.setState({ loading: true });
-        return;
-      }
-      if (info.file.status === 'done') {
-        console.log("info" +info);
-        // Get this url from response in real world.
-        getBase64(info.file.originFileObj, imageUrl => this.setState({
-          imageUrl,
-          loading: false,
-        }));
-      }
-    }
-  
-    render() {
-      const uploadButton = (
-        <div>
-          <Icon type={this.state.loading ? 'loading' : 'plus'} />
-          <div className="ant-upload-text">Upload</div>
-        </div>
-      );
-      const imageUrl = this.state.imageUrl;
-      return (
-        <Upload
-          name="file"
-          listType="picture-card"
-          className="avatar-uploader"
-          showUploadList={false}
-          action="/api/file/uploadFile"
-          beforeUpload={beforeUpload}
-          onChange={this.handleChange}
-        >
-          {imageUrl ? <img src={imageUrl} alt="avatar" /> : uploadButton}
-        </Upload>
-      );
-    }
-  }
-
   
 const FormItem = Form.Item;
 const { Step } = Steps;
@@ -108,14 +48,13 @@ const CreateForm = Form.create()(props => {
   const okHandle = () => {
     form.validateFields((err, fieldsValue) => {
       if (err) return;
-      form.resetFields();
-      console.log(fieldsValue);
+      // form.resetFields();
+      console.log("fieldsValue=" + fieldsValue);
       handleAdd(fieldsValue);
     });
   };
 
   const setcontent = (html,txt) => {
-    //this.setState({postText:html,postContent:txt });
     handleHtml(html);
   }
 
@@ -133,17 +72,11 @@ const CreateForm = Form.create()(props => {
           rules: [{ required: true, message: '请输入至少2个字符的标题！', min: 2 }],
         })(<Input placeholder="请输入标题" />)}
       </FormItem>
-      {/* <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="图片">
-        {form.getFieldDecorator('img', {
-          rules: [{ required: true, message: '请输入至少2个的编辑人员！', min: 2 }],
-        })(<Input placeholder="请输入编辑人员" />)}
-      </FormItem> */}
 
-    {/* <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="图片">
-        {form.getFieldDecorator('img', {
-          rules: [{ required: true, message: '请输入至少2个的编辑人员！', min: 2 }],
-        })(<Avatar/>)}
-    </FormItem> */}
+     <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="图片">
+       <UploadForm form={form} name="img" max={1}/>
+      </FormItem>
+      
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="编辑人员">
         {form.getFieldDecorator('editor', {
           rules: [{ required: true, message: '请输入至少2个的编辑人员！', min: 2 }],
@@ -154,20 +87,10 @@ const CreateForm = Form.create()(props => {
           rules: [{ required: true, message: '请选择发布日期！'}],
         })(<DatePicker/>)}
       </FormItem>
-      {/* <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="内容">
-        {form.getFieldDecorator('editor', {
-          rules: [{ required: true, message: '请输入至少2个的编辑人员！', min: 1 }],
-        })(<Input visible="false" placeholder="请输入编辑人员" />)}
-      </FormItem> */}
+ 
      <div>
         <Editor onChange={setcontent} isCommited={props.isCommited} />
      </div>
-
-     {/* <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="内容">
-        {form.getFieldDecorator('content', {
-          rules: [{ required: true, message: '请输入至少2个的编辑人员！', min: 1 }],
-        })(<Editor/>)}
-      </FormItem> */}
     </Modal>
   );
 });
@@ -176,14 +99,11 @@ class UpdateForm extends PureComponent {
 
   constructor(props) {
     super(props);
-
-
     this.state = {
       formVals: {
         title: props.values.title,
         editor: props.values.editor,
         publishDate: props.values.publishDate,
-        // publishDate: props.values.publishDate,
         key: props.values.key,
         target: '0',
         template: '0',
@@ -211,7 +131,6 @@ class UpdateForm extends PureComponent {
     }
 
     const okHandle = () => {
-      console.log("updateform okHandle----");
       form.validateFields((err, fieldsValue) => {
         if (err) return;
         form.resetFields();
@@ -231,32 +150,38 @@ class UpdateForm extends PureComponent {
         onOk={okHandle}
         onCancel={() => handleUpdateModalVisible()}
       >
-      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="id">
-        {form.getFieldDecorator('id', {
-          initialValue: this.props.values.id,
-        })(<Input placeholder="请输入标题"/>)}
-      </FormItem>
+      {form.getFieldDecorator('id', {
+        initialValue: this.props.values.id,
+      })(<Input placeholder="请输入标题" type="hidden"/>)}
+
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="标题">
         {form.getFieldDecorator('title', {
           rules: [{ required: true, message: '请输入至少2个字符的标题！', min: 2 }],
           initialValue: this.props.values.title,
         })(<Input placeholder="请输入标题" />)}
       </FormItem>
+
+      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="图片">
+        <UploadForm form={form} name="img" max={1} record={{img:[this.props.values.img]}}/>
+      </FormItem>
+
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="编辑人员">
         {form.getFieldDecorator('editor', {
           rules: [{ required: true, message: '请输入至少2个的编辑人员！', min: 2 }],
           initialValue: this.props.values.editor,
         })(<Input placeholder="请输入编辑人员" />)}
       </FormItem>
+
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="发布日期">
         {form.getFieldDecorator('publishDate', {
           rules: [{ required: true, message: '请选择发布日期！'}],
           initialValue: moment(this.props.values.publishDate),
         })(<DatePicker/>)}
       </FormItem>
-     <div>
-        <Editor onChange={setcontent} isCommited={this.props.isCommited} htmlValue={this.props.values.content} ></Editor>
-     </div>
+
+      <div>
+          <Editor onChange={setcontent} isCommited={this.props.isCommited} htmlValue={this.props.values.content} ></Editor>
+      </div>
       </Modal>
     );
   }
@@ -389,18 +314,7 @@ class News extends PureComponent {
     this.setState({
       formValues: {},
     });
-    dispatch({
-      type: 'rule/fetch',
-      payload: {},
-    });
   };
-
-  // toggleForm = () => {
-  //   const { expandForm } = this.state;
-  //   this.setState({
-  //     expandForm: !expandForm,
-  //   });
-  // };
 
   handleMenuClick = e => {
     const { dispatch } = this.props;
@@ -410,9 +324,10 @@ class News extends PureComponent {
     switch (e.key) {
       case 'remove':
         dispatch({
-          type: 'rule/remove',
+          type: 'news/removeArticle',
           payload: {
-            key: selectedRows.map(row => row.key),
+            key: selectedRows.map(row => row.id),
+            smallCatalog: this.props.match.params.catalog,
           },
           callback: () => {
             this.setState({
@@ -475,13 +390,11 @@ class News extends PureComponent {
     dispatch({
         type: 'news/addArticle',
         payload: {
-            title: fields.title,
-            editor: fields.editor,
+            ...fields,
             smallCatalog: this.state.catalog,
             content: this.state.html,
         },
     });
-  
     message.success('添加成功');
     this.handleModalVisible();
   };
@@ -492,33 +405,17 @@ class News extends PureComponent {
   }
 
   handleUpdate = fields => {
-    // const { dispatch } = this.props;
-    // dispatch({
-    //   type: 'rule/update',
-    //   payload: {
-    //     name: fields.name,
-    //     desc: fields.desc,
-    //     key: fields.key,
-    //   },
-    // });
-
-    // message.success('配置成功');
-    // this.handleUpdateModalVisible();
     const { dispatch } = this.props;
     dispatch({
         type: 'news/addArticle',
         payload: {
-            id: fields.id,
-            title: fields.title,
-            editor: fields.editor,
+            ...fields,
             smallCatalog: this.state.catalog,
             content: this.state.html,
         },
     });
-  
     message.success('添加成功');
     this.handleUpdateModalVisible();
-
   };
 
   renderSimpleForm() {
@@ -574,7 +471,7 @@ class News extends PureComponent {
     const menu = (
       <Menu onClick={this.handleMenuClick} selectedKeys={[]}>
         <Menu.Item key="remove">删除</Menu.Item>
-        <Menu.Item key="approval">批量审批</Menu.Item>
+        {/* <Menu.Item key="approval">批量审批</Menu.Item> */}
       </Menu>
     );
 
@@ -598,7 +495,7 @@ class News extends PureComponent {
               </Button>
               {selectedRows.length > 0 && (
                 <span>
-                  <Button>批量操作</Button>
+                  {/* <Button>批量操作</Button> */}
                   <Dropdown overlay={menu}>
                     <Button>
                       更多操作 <Icon type="down" />
@@ -608,6 +505,7 @@ class News extends PureComponent {
               )}
             </div>
             <StandardTable
+              rowKey='id'
               selectedRows={selectedRows}
               loading={loading}
               data={data}
@@ -618,17 +516,14 @@ class News extends PureComponent {
           </div>
         </Card>
         <CreateForm {...parentMethods} modalVisible={modalVisible} />
-        {/* {stepFormValues && Object.keys(stepFormValues).length ? ( */}
           <UpdateForm
             {...parentMethods}
             {...updateMethods}
             updateModalVisible={updateModalVisible}
             values={stepFormValues}
           />
-        {/* ) : null} */}
       </PageHeaderWrapper>
     );
   }
 }
-
 export default News;

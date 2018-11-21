@@ -67,9 +67,38 @@ export default {
 
         *addArticle({payload},{call,put}){
             // let {id,title,content,img,editor,publishDate,smallCatalog} = payload;
+            let { smallCatalog } = payload;
             console.log("payload---" + payload);
             const { data } = yield call(svc.addArticle,payload);
             console.log(data);
+
+
+            yield put({
+                type: 'news/fetchArticleList',
+                payload: {
+                  smallCatalog: smallCatalog,
+                  title: "",
+                  date: [],
+                  currentPage: 1,
+                  pageSize: 10,
+                },
+              });
+        },
+
+        *removeArticle({payload},{call,put}){
+            let { smallCatalog } = payload;
+            const { data } = yield call(svc.removeArticle,payload);
+            console.log(data);
+            yield put({
+                type: 'news/fetchArticleList',
+                payload: {
+                  smallCatalog: smallCatalog,
+                  title: "",
+                  date: [],
+                  currentPage: 1,
+                  pageSize: 10,
+                },
+              });
         }
     },
 

@@ -101,10 +101,10 @@ class BasicLayout extends React.PureComponent {
     dispatch({
       type: 'global/fetchMenus',
     });
-
-    dispatch({
-      type: 'user/fetchCurrent',
-    });
+//临时注释liuhy
+    // dispatch({
+    //   type: 'user/fetchCurrent',
+    // });
     dispatch({
       type: 'setting/getSetting',
     });
@@ -184,7 +184,7 @@ class BasicLayout extends React.PureComponent {
     const currRouterData = this.matchParamsPath(pathname);
 
     if (!currRouterData) {
-      return 'Ant Design Pro';
+      return 'Console';
     }
     const message = formatMessage({
       id: currRouterData.locale || currRouterData.name,
