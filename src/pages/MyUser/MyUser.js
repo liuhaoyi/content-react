@@ -13,7 +13,6 @@ import {
   Dropdown,
   Menu,
   InputNumber,
-  DatePicker,
   Modal,
   message,
   Badge,
@@ -25,10 +24,7 @@ import {
 import StandardTable from '@/components/StandardTable';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import styles from './TableList.less';
-import Editor from "@/pages/utils/Editor"
-import UploadForm from './UploadForm'
 
-const RangePicker = DatePicker.RangePicker;
   
 const FormItem = Form.Item;
 const { Step } = Steps;
@@ -39,8 +35,8 @@ const getValue = obj =>
   Object.keys(obj)
     .map(key => obj[key])
     .join(',');
-const statusMap = ['default', 'processing', 'success', 'error'];
-const status = ['关闭', '运行中', '已上线', '异常'];
+// const statusMap = ['default', 'processing', 'success', 'error'];
+// const status = ['关闭', '运行中', '已上线', '异常'];
 
 const CreateForm = Form.create()(props => {
   const { modalVisible, form, handleAdd, handleHtml, handleModalVisible } = props;
@@ -62,35 +58,33 @@ const CreateForm = Form.create()(props => {
     <Modal
       width="1240px"
       destroyOnClose
-      title="发布新闻"
+      title="新增用户"
       visible={modalVisible}
       onOk={okHandle}
       onCancel={() => handleModalVisible()}
     >
-      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="标题">
-        {form.getFieldDecorator('title', {
-          rules: [{ required: true, message: '请输入至少2个字符的标题！', min: 2 }],
-        })(<Input placeholder="请输入标题" />)}
+      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="姓名">
+        {form.getFieldDecorator('name', {
+          rules: [{ required: true, message: '请输入至少2个字符！', min: 2 }],
+        })(<Input placeholder="请输入姓名" />)}
       </FormItem>
-
-     <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="图片">
-       <UploadForm form={form} name="img" max={1}/>
+   
+      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="登录名">
+        {form.getFieldDecorator('loginName', {
+          rules: [{ required: true, message: '请输入至少2个字符！', min: 2 }],
+        })(<Input placeholder="请输入登录名" />)}
       </FormItem>
-      
-      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="编辑人员">
-        {form.getFieldDecorator('editor', {
-          rules: [{ required: true, message: '请输入至少2个的编辑人员！', min: 2 }],
-        })(<Input placeholder="请输入编辑人员" />)}
+      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="手机号码">
+        {form.getFieldDecorator('phone', {
+          rules: [{ required: true, message: '请输入至少2个字符！', min: 2 }],
+        })(<Input placeholder="请输入手机号码" />)}
       </FormItem>
-      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="发布日期">
-        {form.getFieldDecorator('publishDate', {
-          rules: [{ required: true, message: '请选择发布日期！'}],
-        })(<DatePicker/>)}
+      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="工号">
+        {form.getFieldDecorator('userNo', {
+          rules: [{ required: true, message: '请输入至少2个字符！', min: 2 }],
+        })(<Input placeholder="请输入工号" />)}
       </FormItem>
- 
-     <div>
-        <Editor onChange={setcontent} isCommited={props.isCommited} />
-     </div>
+    
     </Modal>
   );
 });
@@ -144,7 +138,7 @@ class UpdateForm extends PureComponent {
         width={640}
         bodyStyle={{ padding: '32px 40px 48px' }}
         destroyOnClose
-        title="编辑文章"
+        title="编辑用户"
         visible={updateModalVisible}
         // footer={this.renderFooter(currentStep)}
         onOk={okHandle}
@@ -152,47 +146,45 @@ class UpdateForm extends PureComponent {
       >
       {form.getFieldDecorator('id', {
         initialValue: this.props.values.id,
-      })(<Input placeholder="请输入标题" type="hidden"/>)}
+      })(<Input type="hidden"/>)}
 
-      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="标题">
-        {form.getFieldDecorator('title', {
-          rules: [{ required: true, message: '请输入至少2个字符的标题！', min: 2 }],
-          initialValue: this.props.values.title,
-        })(<Input placeholder="请输入标题" />)}
+      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="姓名">
+        {form.getFieldDecorator('name', {
+          rules: [{ required: true, message: '请输入至少2个字符！', min: 2 }],
+          initialValue: this.props.values.name,
+        })(<Input placeholder="请输入姓名" />)}
       </FormItem>
 
-      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="图片">
-        <UploadForm form={form} name="img" max={1} record={{img:[this.props.values.img]}}/>
-      </FormItem>
-
-      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="编辑人员">
-        {form.getFieldDecorator('editor', {
-          rules: [{ required: true, message: '请输入至少2个的编辑人员！', min: 2 }],
-          initialValue: this.props.values.editor,
+      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="登录名">
+        {form.getFieldDecorator('loginName', {
+          rules: [{ required: true, message: '请输入至少2个字符！', min: 2 }],
+          initialValue: this.props.values.loginName,
         })(<Input placeholder="请输入编辑人员" />)}
       </FormItem>
 
-      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="发布日期">
-        {form.getFieldDecorator('publishDate', {
-          rules: [{ required: true, message: '请选择发布日期！'}],
-          initialValue: moment(this.props.values.publishDate),
-        })(<DatePicker/>)}
+      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="手机号码">
+        {form.getFieldDecorator('phone', {
+          rules: [{ required: true, message: '请输入至少2个字符！', min: 2 }],
+          initialValue: this.props.values.phone,
+        })(<Input placeholder="请输入手机号码" />)}
       </FormItem>
-
-      <div>
-          <Editor onChange={setcontent} isCommited={this.props.isCommited} htmlValue={this.props.values.content} ></Editor>
-      </div>
+      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="工号">
+        {form.getFieldDecorator('userNo', {
+          rules: [{ required: true, message: '请输入至少2个字符！', min: 2 }],
+          initialValue: this.props.values.userNo,
+        })(<Input placeholder="请输入工号" />)}
+      </FormItem>
       </Modal>
     );
   }
 }
 /* eslint react/no-multi-comp:0 */
-@connect(({ loading,news }) => ({
-  news,
-  loading: loading.models.news,
+@connect(({ loading,myuser }) => ({
+  myuser,
+  loading: loading.models.myuser,
 }))
 @Form.create()
-class News extends PureComponent {
+class MyUser extends PureComponent {
   state = {
     modalVisible: false,
     updateModalVisible: false,
@@ -206,29 +198,22 @@ class News extends PureComponent {
 
   columns = [
     {
-      title: '文章标题',
-      dataIndex: 'title',
+      title: '姓名',
+      dataIndex: 'name',
     },
     {
-      title: '图片',
-      dataIndex: 'img',
+      title: '登录名',
+      dataIndex: 'loginName',
     },
     {
-      title: '编辑人员',
-      dataIndex: 'editor',
+      title: '手机号码',
+      dataIndex: 'phone',
     },
     {
-      title: '发布时间',
-      dataIndex: 'publishDate',
-      // sorter: true,
-      render: val => <span>{moment(val).format('YYYY-MM-DD')}</span>,
+      title: '工号',
+      dataIndex: 'userNo',
     },
-
-    {
-      title: '阅读次数',
-      dataIndex: 'readCount',
-      align: 'right',
-    },
+    
     {
       title: '操作',
       render: (text, record) => (
@@ -243,17 +228,17 @@ class News extends PureComponent {
 
   componentDidMount() {
     
-    let catalog = this.props.match.params.catalog;
-    this.setState({
-      catalog: catalog,
-    })
+    // let catalog = this.props.match.params.catalog;
+    // this.setState({
+    //   catalog: catalog,
+    // })
+    console.log("Myuser did mount....");
     const { dispatch } = this.props;
     dispatch({
-      type: 'news/fetchArticleList',
+      type: 'myuser/fetchList',
       payload: {
-        smallCatalog: this.props.match.params.catalog,
-        title: "",
-        date:[],
+        name: "",
+        phone: "",
         currentPage: 1,
         pageSize: 10,
       },
@@ -261,27 +246,27 @@ class News extends PureComponent {
   }
 
   componentDidUpdate(){
-    let catalog = this.props.match.params.catalog;
-    if(this.state.catalog !=catalog){
-      //新菜单；
-      let catalog = this.props.match.params.catalog;
-      this.setState({
-        catalog: catalog,
-      })
-      const { dispatch } = this.props;
-      dispatch({
-        type: 'news/fetchArticleList',
-        payload: {
-          smallCatalog: this.props.match.params.catalog,
-          title: "",
-          date: [],
-          currentPage: 1,
-          pageSize: 10,
-        },
-      });
-      //切换菜单，清空查询条件。
-      this.handleFormReset();
-    }
+    // let catalog = this.props.match.params.catalog;
+    // if(this.state.catalog !=catalog){
+    //   //新菜单；
+    //   let catalog = this.props.match.params.catalog;
+    //   this.setState({
+    //     catalog: catalog,
+    //   })
+    //   const { dispatch } = this.props;
+    //   dispatch({
+    //     type: 'news/fetchArticleList',
+    //     payload: {
+    //       smallCatalog: this.props.match.params.catalog,
+    //       title: "",
+    //       date: [],
+    //       currentPage: 1,
+    //       pageSize: 10,
+    //     },
+    //   });
+    //   //切换菜单，清空查询条件。
+    //   this.handleFormReset();
+    // }
   }
 
   handleStandardTableChange = (pagination, filtersArg, sorter) => {
@@ -293,7 +278,6 @@ class News extends PureComponent {
       return newObj;
     }, {});
     const params = {
-      smallCatalog: this.props.match.params.catalog,
       currentPage: pagination.current,
       pageSize: pagination.pageSize,
       ...formValues,
@@ -303,7 +287,7 @@ class News extends PureComponent {
       params.sorter = `${sorter.field}_${sorter.order}`;
     }
     dispatch({
-      type: 'news/fetchArticleList',
+      type: 'myuser/fetchList',
       payload: params,
     });
   };
@@ -324,10 +308,9 @@ class News extends PureComponent {
     switch (e.key) {
       case 'remove':
         dispatch({
-          type: 'news/removeArticle',
+          type: 'myuser/remove',
           payload: {
             key: selectedRows.map(row => row.id),
-            smallCatalog: this.props.match.params.catalog,
           },
           callback: () => {
             this.setState({
@@ -354,16 +337,15 @@ class News extends PureComponent {
       if (err) return;
       const values = {
         ...fieldsValue,
-        updatedAt: fieldsValue.updatedAt && fieldsValue.updatedAt.valueOf(),
+        // updatedAt: fieldsValue.updatedAt && fieldsValue.updatedAt.valueOf(),
       };
 
       this.setState({
         formValues: values,
       });
       dispatch({
-        type: 'news/fetchArticleList',
+        type: 'myuser/fetchList',
         payload: {
-          smallCatalog: this.props.match.params.catalog,
           ...fieldsValue,
           currentPage: 1,
           pageSize: 10,
@@ -388,30 +370,22 @@ class News extends PureComponent {
   handleAdd = fields => {
     const { dispatch } = this.props;
     dispatch({
-        type: 'news/addArticle',
+        type: 'myuser/add',
         payload: {
             ...fields,
-            smallCatalog: this.state.catalog,
-            content: this.state.html,
         },
     });
     message.success('添加成功');
     this.handleModalVisible();
   };
 
-  //修改文章；
-  handleHtml = html =>{
-    this.setState({html:html});
-  }
-
+  
   handleUpdate = fields => {
     const { dispatch } = this.props;
     dispatch({
-        type: 'news/addArticle',
+        type: 'myuser/add',
         payload: {
             ...fields,
-            smallCatalog: this.state.catalog,
-            content: this.state.html,
         },
     });
     message.success('添加成功');
@@ -426,21 +400,15 @@ class News extends PureComponent {
       <Form onSubmit={this.handleSearch} layout="inline">
         <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
           <Col md={8} sm={24}>
-            <FormItem label="标题">
-              {getFieldDecorator('title')(<Input placeholder="请输入" />)}
+            <FormItem label="姓名">
+              {getFieldDecorator('name')(<Input placeholder="请输入姓名" />)}
             </FormItem>
           </Col>
           <Col md={8} sm={24}>
-            <FormItem label="">
-              {getFieldDecorator('date')(   
-              <RangePicker
-                ranges={{ Today: [moment(), moment()], 'This Month': [moment(), moment().endOf('month')] }}
-                showTime
-                format="YYYY/MM/DD"
-                // onChange={onChange}
-              />)}
+            <FormItem label="手机号码">
+              {getFieldDecorator('phone')(<Input placeholder="请输入手机号码" />)}
             </FormItem>
-          </Col>
+          </Col>        
         
           <Col md={8} sm={24}>
             <span className={styles.submitButtons}>
@@ -464,7 +432,7 @@ class News extends PureComponent {
 
   render() {
     const {
-      news: { data },
+      myuser: { data },
       loading,
     } = this.props;
     const { selectedRows, modalVisible, updateModalVisible, stepFormValues } = this.state;
@@ -477,7 +445,6 @@ class News extends PureComponent {
 
     const parentMethods = {
       handleAdd: this.handleAdd,
-      handleHtml : this.handleHtml,
       handleModalVisible: this.handleModalVisible,
     };
     const updateMethods = {
@@ -526,4 +493,4 @@ class News extends PureComponent {
     );
   }
 }
-export default News;
+export default MyUser;

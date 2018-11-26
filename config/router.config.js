@@ -33,10 +33,28 @@ export default [
           },
           {
             path: '/news/article/:catalog',
-            hideInMenu:true,
+            // hideInMenu:false,
             name: 'news',
             component: './News/News',
           }
+          // {
+          //   path: '/dashboard/workplace',
+          //   name: 'workplace',
+          //   component: './Dashboard/Workplace',
+          // },
+        ],
+      },
+      {
+        path: '/myuser',
+        name: 'myuser',
+        icon: 'myuser',
+        routes: [
+          {
+            path: '/myuser/myuser',
+            // hideInMenu:false,
+            name: 'myuser',
+            component: './MyUser/MyUser',
+          },
           // {
           //   path: '/dashboard/workplace',
           //   name: 'workplace',
