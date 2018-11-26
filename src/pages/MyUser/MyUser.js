@@ -35,8 +35,7 @@ const getValue = obj =>
   Object.keys(obj)
     .map(key => obj[key])
     .join(',');
-// const statusMap = ['default', 'processing', 'success', 'error'];
-// const status = ['关闭', '运行中', '已上线', '异常'];
+
 
 const CreateForm = Form.create()(props => {
   const { modalVisible, form, handleAdd, handleHtml, handleModalVisible } = props;
@@ -44,8 +43,6 @@ const CreateForm = Form.create()(props => {
   const okHandle = () => {
     form.validateFields((err, fieldsValue) => {
       if (err) return;
-      // form.resetFields();
-      console.log("fieldsValue=" + fieldsValue);
       handleAdd(fieldsValue);
     });
   };
@@ -56,7 +53,7 @@ const CreateForm = Form.create()(props => {
 
   return (
     <Modal
-      width="1240px"
+      width="600px"
       destroyOnClose
       title="新增用户"
       visible={modalVisible}
@@ -93,21 +90,21 @@ class UpdateForm extends PureComponent {
 
   constructor(props) {
     super(props);
-    this.state = {
-      formVals: {
-        title: props.values.title,
-        editor: props.values.editor,
-        publishDate: props.values.publishDate,
-        key: props.values.key,
-        target: '0',
-        template: '0',
-        type: '1',
-        time: '',
-        frequency: 'month',
-      },
-      currentStep: 0,
+    // this.state = {
+    //   formVals: {
+    //     title: props.values.title,
+    //     editor: props.values.editor,
+    //     publishDate: props.values.publishDate,
+    //     key: props.values.key,
+    //     target: '0',
+    //     template: '0',
+    //     type: '1',
+    //     time: '',
+    //     frequency: 'month',
+    //   },
+    //   // currentStep: 0,
 
-    };
+    // };
 
     this.formLayout = {
       labelCol: { span: 7 },
@@ -117,25 +114,24 @@ class UpdateForm extends PureComponent {
   
   render() {
     const { form } = this.props;
-    const { updateModalVisible, handleUpdateModalVisible, handleHtml, handleUpdate } = this.props;
+    const { updateModalVisible, handleUpdateModalVisible, handleUpdate } = this.props;
     // const { formVals } = this.state;
-    const setcontent = (html,txt) => {
-      this.setState({postText:html,postContent:txt });
-      handleHtml(html);
-    }
+    // const setcontent = (html,txt) => {
+    //   // this.setState({postText:html,postContent:txt });
+    //   handleHtml(html);
+    // }
 
     const okHandle = () => {
       form.validateFields((err, fieldsValue) => {
         if (err) return;
         form.resetFields();
-        console.log(fieldsValue);
         handleUpdate(fieldsValue);
       });
     };
   
     return (
       <Modal
-        width={640}
+        width={600}
         bodyStyle={{ padding: '32px 40px 48px' }}
         destroyOnClose
         title="编辑用户"
@@ -188,12 +184,9 @@ class MyUser extends PureComponent {
   state = {
     modalVisible: false,
     updateModalVisible: false,
-    // expandForm: false,
     selectedRows: [],
     formValues: {},
     stepFormValues: {},
-    catalog: null,
-    html: null,
   };
 
   columns = [
@@ -227,12 +220,6 @@ class MyUser extends PureComponent {
   ];
 
   componentDidMount() {
-    
-    // let catalog = this.props.match.params.catalog;
-    // this.setState({
-    //   catalog: catalog,
-    // })
-    console.log("Myuser did mount....");
     const { dispatch } = this.props;
     dispatch({
       type: 'myuser/fetchList',
@@ -337,7 +324,6 @@ class MyUser extends PureComponent {
       if (err) return;
       const values = {
         ...fieldsValue,
-        // updatedAt: fieldsValue.updatedAt && fieldsValue.updatedAt.valueOf(),
       };
 
       this.setState({
@@ -442,7 +428,6 @@ class MyUser extends PureComponent {
         {/* <Menu.Item key="approval">批量审批</Menu.Item> */}
       </Menu>
     );
-
     const parentMethods = {
       handleAdd: this.handleAdd,
       handleModalVisible: this.handleModalVisible,
