@@ -17,7 +17,7 @@ import Footer from './Footer';
 import Header from './Header';
 import Context from './MenuContext';
 import Exception403 from '../pages/Exception/403';
-
+import router from 'umi/router'
 const { Content } = Layout;
 
 // Conversion router to menu.
@@ -98,16 +98,29 @@ class BasicLayout extends React.PureComponent {
   componentDidMount() {
     const { dispatch } = this.props;
 
+    const userId = sessionStorage.getItem('userId');
+
+    if(!userId){
+      router.push({
+        pathname: '/user',
+      });
+      return;
+    }  
+
+
     dispatch({
       type: 'global/fetchMenus',
     });
 //临时注释liuhy
-    // dispatch({
-    //   type: 'user/fetchCurrent',
-    // });
     dispatch({
-      type: 'setting/getSetting',
+      type: 'user/fetchCurrent',
+      payload: {
+        userId: userId,
+      }
     });
+    // dispatch({
+    //   type: 'setting/getSetting',
+    // });
     this.renderRef = requestAnimationFrame(() => {
       this.setState({
         rendering: false,
@@ -169,7 +182,7 @@ class BasicLayout extends React.PureComponent {
         routerMap[menuItem.path] = menuItem;
       });
     };
-    // mergeMenuAndRouter(this.getMenuData());
+    mergeMenuAndRouter(this.props.menuData);
     return routerMap;
   }
 

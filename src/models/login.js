@@ -4,6 +4,7 @@ import { fakeAccountLogin, getFakeCaptcha } from '@/services/api';
 import { setAuthority } from '@/utils/authority';
 import { getPageQuery } from '@/utils/utils';
 import { reloadAuthorized } from '@/utils/Authorized';
+import { message  } from 'antd';
 
 export default {
   namespace: 'login',
@@ -21,6 +22,13 @@ export default {
       });
       // Login successfully
       if (response.status === 'ok') {
+
+        if(!response.user){
+          message.error('登录名或密码错误！');
+          return;
+        }
+        sessionStorage.setItem("userId",response.user.id);
+
         reloadAuthorized();
         const urlParams = new URL(window.location.href);
         const params = getPageQuery();
